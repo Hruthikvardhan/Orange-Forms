@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import orangeIcon from "../assets/orange_icon.png"; // Make sure this path is correct
 
 const LoginPage = ({ onSwitchToRegister, onForgotPassword }) => {
   const [email, setEmail] = useState("");
@@ -11,8 +12,17 @@ const LoginPage = ({ onSwitchToRegister, onForgotPassword }) => {
 
   return (
     <form onSubmit={handleSubmit} className="login-form">
-      <h2>
-        <b>🍊 Login to Orange Form</b>
+      {/* Icon above the heading */}
+      <div style={{ textAlign: "center", marginBottom: "8px" }}>
+        <img
+          src={orangeIcon}
+          alt="Orange Icon"
+          style={{ width: "40px", height: "40px" }}
+        />
+      </div>
+
+      <h2 style={{ textAlign: "center", fontWeight: 600 }}>
+        Login to Orange Form
       </h2>
 
       <label>Email:</label>

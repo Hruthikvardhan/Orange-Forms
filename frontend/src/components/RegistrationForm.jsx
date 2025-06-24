@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const RegistrationForm = ({ onSuccess }) => {
+const RegistrationForm = ({ onSuccess, onSwitchToLogin }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("+91");
@@ -13,7 +13,7 @@ const RegistrationForm = ({ onSuccess }) => {
     setIsSubmitted(true);
   };
 
-  // ✅ Password validation rules
+  // Password validation rules
   const isLengthValid = password.length >= 8;
   const hasCapital = /[A-Z]/.test(password);
   const hasNumber = /\d/.test(password);
@@ -68,7 +68,7 @@ const RegistrationForm = ({ onSuccess }) => {
         placeholder="Create a password"
       />
 
-      {/* ✅ Password rule feedback */}
+      {/* Password rule feedback */}
       <ul style={{ fontSize: "12px", marginTop: "5px", paddingLeft: "20px" }}>
         <li style={{ color: isLengthValid ? "green" : "red" }}>
           Minimum 8 characters
@@ -82,6 +82,18 @@ const RegistrationForm = ({ onSuccess }) => {
       </ul>
 
       <button type="submit">Register</button>
+
+      <p
+        style={{
+          marginTop: "15px",
+          textAlign: "center",
+          cursor: "pointer",
+          color: "#1976d2",
+        }}
+        onClick={onSwitchToLogin}
+      >
+        Already have an account? Login here
+      </p>
     </form>
   );
 };

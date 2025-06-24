@@ -5,10 +5,17 @@ import RegistrationForm from "./RegistrationForm";
 const AuthPage = () => {
   const [isRegistering, setIsRegistering] = useState(false);
 
-  return isRegistering ? (
-    <RegistrationForm onSuccess={() => setIsRegistering(false)} />
-  ) : (
-    <LoginPage onSwitchToRegister={() => setIsRegistering(true)} />
+  return (
+    <>
+      {isRegistering ? (
+        <RegistrationForm
+          onSuccess={() => setIsRegistering(false)}
+          onSwitchToLogin={() => setIsRegistering(false)}
+        />
+      ) : (
+        <LoginPage onSwitchToRegister={() => setIsRegistering(true)} />
+      )}
+    </>
   );
 };
 
