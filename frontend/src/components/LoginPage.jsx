@@ -7,7 +7,37 @@ const LoginPage = ({ onSwitchToRegister, onForgotPassword }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login:", { email, password });
+
+    // --- CRITICAL CHANGE HERE: Added /api to the URL ---
+    fetch("http://localhost:8080/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          // If response is not ok (e.g., 404, 401), backend might send plain text for errors.
+          return res.text().then((text) => {
+            throw new Error(text || "Login failed");
+          });
+        }
+        return res.json(); // For successful login, we now expect JSON from the backend.
+      })
+      .then((data) => {
+        console.log("Login Success:", data);
+        // --- IMPROVED ALERT MESSAGE HERE ---
+        alert(data.message || "Login successful!");
+        // TODO: Redirect to dashboard or home page here
+      })
+      .catch((err) => {
+        console.error(err);
+        // --- IMPROVED ALERT MESSAGE HERE ---
+        alert(
+          err.message || "Login failed! Check your credentials and try again."
+        );
+      });
   };
 
   return (

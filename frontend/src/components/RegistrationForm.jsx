@@ -9,8 +9,36 @@ const RegistrationForm = ({ onSuccess, onSwitchToLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Registered:", { name, email, phone, password });
-    setIsSubmitted(true);
+
+    fetch("http://localhost:8080/api/register", {
+      // <-- fix URL here
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, phone, password }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.text(); // <-- backend returns plain text, not JSON
+      })
+      .then((responseText) => {
+        console.log("Response from backend:", responseText);
+
+        if (responseText === "User registered successfully!") {
+          setIsSubmitted(true);
+        } else if (responseText === "Email already registered") {
+          alert("This email is already registered. Please login.");
+        } else {
+          alert("Registration failed! Please try again.");
+        }
+      })
+      .catch((err) => {
+        console.error("Registration error:", err);
+        alert("Registration failed! Please try again.");
+      });
   };
 
   // Password validation rules
