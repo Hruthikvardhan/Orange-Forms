@@ -1,14 +1,15 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import orangeIcon from "../assets/orange_icon.png"; // Make sure this path is correct
 
 const LoginPage = ({ onSwitchToRegister, onForgotPassword }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // --- CRITICAL CHANGE HERE: Added /api to the URL ---
     fetch("http://localhost:8080/api/login", {
       method: "POST",
       headers: {
@@ -18,22 +19,26 @@ const LoginPage = ({ onSwitchToRegister, onForgotPassword }) => {
     })
       .then((res) => {
         if (!res.ok) {
-          // If response is not ok (e.g., 404, 401), backend might send plain text for errors.
           return res.text().then((text) => {
             throw new Error(text || "Login failed");
           });
         }
-        return res.json(); // For successful login, we now expect JSON from the backend.
+        return res.json();
       })
       .then((data) => {
-        console.log("Login Success:", data);
-        // --- IMPROVED ALERT MESSAGE HERE ---
-        alert(data.message || "Login successful!");
-        // TODO: Redirect to dashboard or home page here
+        // Save username and token to localStorage
+        if (data.username) {
+          localStorage.setItem("username", data.username);
+        }
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
+        // Notify header and all tabs instantly
+        window.dispatchEvent(new Event("storage"));
+        // Redirect to home page
+        navigate("/");
       })
       .catch((err) => {
-        console.error(err);
-        // --- IMPROVED ALERT MESSAGE HERE ---
         alert(
           err.message || "Login failed! Check your credentials and try again."
         );
