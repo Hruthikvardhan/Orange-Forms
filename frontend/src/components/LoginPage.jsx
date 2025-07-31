@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import orangeIcon from "../assets/orange_icon.png"; // Make sure this path is correct
+import orangeIcon from "../assets/orange_icon.png"; // Adjust path if needed
 
 const LoginPage = ({ onSwitchToRegister, onForgotPassword }) => {
   const [email, setEmail] = useState("");
@@ -26,16 +26,24 @@ const LoginPage = ({ onSwitchToRegister, onForgotPassword }) => {
         return res.json();
       })
       .then((data) => {
-        // Save username and token to localStorage
-        if (data.username) {
-          localStorage.setItem("username", data.username);
+        console.log("BACKEND LOGIN RESPONSE:", data);
+
+        if (data.name) {
+          localStorage.setItem("username", data.name);
+        } else if (data.email) {
+          localStorage.setItem("username", data.email);
+        } else {
+          alert("Could not find user name in backend response.");
+          return;
         }
+
         if (data.token) {
           localStorage.setItem("token", data.token);
         }
-        // Notify header and all tabs instantly
+
+        // Notify listening components/tabs to update username immediately
         window.dispatchEvent(new Event("storage"));
-        // Redirect to home page
+
         navigate("/");
       })
       .catch((err) => {
@@ -45,9 +53,24 @@ const LoginPage = ({ onSwitchToRegister, onForgotPassword }) => {
       });
   };
 
+  // Custom button styles
+  const loginButtonStyle = {
+    backgroundColor: "#ff9800",
+    color: "#fff",
+    padding: "12px 0",
+    border: "none",
+    borderRadius: "6px",
+    width: "100%",
+    fontSize: "16px",
+    fontWeight: 600,
+    cursor: "pointer",
+    marginTop: "8px",
+    transition: "background-color 0.3s ease",
+  };
+
   return (
     <form onSubmit={handleSubmit} className="login-form">
-      {/* Icon above the heading */}
+      {/* Icon */}
       <div style={{ textAlign: "center", marginBottom: "8px" }}>
         <img
           src={orangeIcon}
@@ -97,7 +120,15 @@ const LoginPage = ({ onSwitchToRegister, onForgotPassword }) => {
         </button>
       </div>
 
-      <button type="submit">Login</button>
+      {/* Orange Login button with hover effect */}
+      <button
+        type="submit"
+        style={loginButtonStyle}
+        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#e65100")}
+        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#ff9800")}
+      >
+        Login
+      </button>
 
       <p style={{ marginTop: "15px", textAlign: "center" }}>
         Don't have an account?{" "}
